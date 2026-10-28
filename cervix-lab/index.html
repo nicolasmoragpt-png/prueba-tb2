@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0e272e">
+  <meta name="description" content="Laboratorio educativo 3D de Papanicolaou convencional e IVAA.">
+  <title>Cérvix Lab · Simulación 3D</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body data-mode="guide" data-module="pap">
+  <div id="app">
+    <aside class="sidebar">
+      <a class="brand" href="#" id="home" aria-label="Cérvix Lab · ver mi recorrido">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-dasharray="78 16.25" transform="rotate(30 20 20)"/><ellipse cx="20" cy="20" rx="5.2" ry="3.1" fill="#9fe0cb"/></svg></span>
+        <span class="brand-text">CÉRVIX <b>LAB</b><small>LABORATORIO DE SIMULACIÓN</small></span>
+      </a>
+      <div class="side-label">TU RECORRIDO</div>
+      <nav aria-label="Módulos de aprendizaje">
+        <button class="module active" data-module="pap"><span class="module-n">01</span><span class="module-text">Papanicolaou<small>Citología convencional</small></span><span class="module-arrow" aria-hidden="true">›</span></button>
+        <button class="module" data-module="via"><span class="module-n">02</span><span class="module-text">IVAA<small>Inspección visual</small></span><span class="module-arrow" aria-hidden="true">›</span></button>
+      </nav>
+      <div class="side-label cases-label">ESCENARIOS</div><div id="case-list"></div>
+      <div class="side-bottom">
+        <div class="course-card"><div class="course-label"><span>Evaluaciones aprobadas</span><b id="course-count">0 / 7</b></div><div class="progress-track"><div id="course-progress"></div></div></div>
+        <button class="side-link" id="course-report">Ver mi recorrido <span aria-hidden="true">›</span></button>
+        <button class="side-link" id="help">Guía, fuentes y licencias <span aria-hidden="true">›</span></button>
+        <div class="lms-status" id="lms-status">Preparando laboratorio…</div>
+      </div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div class="title-block"><span class="eyebrow" id="module-eyebrow">MÓDULO 01 / CITOLOGÍA</span><h1 id="module-title">Toma de Papanicolaou</h1></div>
+        <div class="session-title"><span class="case-dot" aria-hidden="true"></span><span class="case-text"><strong id="case-title">Caso 01</strong><span id="case-profile"></span></span></div>
+        <div class="header-actions">
+          <div class="mode-switch" role="group" aria-label="Modo de simulación"><button id="mode-guide" class="active">Práctica guiada</button><button id="mode-exam">Evaluación</button></div>
+          <span class="prototype">Modelo educativo · revisión clínica pendiente</span>
+          <button class="icon-button" id="fullscreen" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+      </header>
+      <div class="workspace">
+        <section class="sim-column" aria-label="Simulación tridimensional">
+          <div class="viewport-wrap">
+            <div id="viewport"><div class="loading" id="loading"><span class="spinner" aria-hidden="true"></span>Preparando anatomía 3D…</div></div>
+            <div id="anatomy-labels" aria-hidden="true"></div>
+            <div class="view-top"><span class="live-chip"><i></i>ENTORNO 3D</span><span class="view-tag" id="view-tag">Anatomía esquemática original</span></div>
+            <div class="view-controls">
+              <div class="segmented" role="group" aria-label="Vistas anatómicas"><button data-view="procedure" class="active">Procedimiento</button><button data-view="front">Cérvix</button><button data-view="side">Lateral</button></div>
+              <div class="toggles" role="group" aria-label="Capas del modelo"><button id="cutaway" class="toggle" aria-pressed="true">Corte anatómico</button><button id="labels" class="toggle" aria-pressed="true">Etiquetas</button></div>
+            </div>
+            <div class="timer-chip hidden" id="timer-chip"><span>Tiempo de reacción</span><strong id="reaction-time">00:00 / 01:00</strong><div class="timer-line"><i id="reaction-progress"></i></div><small id="reaction-note">60 segundos reales</small></div>
+            <div class="geometry-indicator" id="geometry-indicator">Explorá la anatomía antes de comenzar.</div>
+            <div class="view-bottom"><span class="view-hint">Arrastrá para girar · rueda para acercar</span><button id="reset-camera"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>Restablecer vista</button></div>
+          </div>
+          <div class="dock">
+            <div class="instrument-panel"><div class="section-heading"><span><em>01</em>Instrumental</span><span class="muted" id="tool-caption">Seleccioná un instrumento</span></div><div class="tool-tray" id="tool-tray"></div></div>
+            <div class="manipulation-panel"><div class="section-heading"><span><em>02</em>Control del instrumento</span><button id="position-assist" class="text-button">Orientación de práctica</button></div><div id="control-sliders" class="control-grid"></div><div class="control-footer"><span id="control-hint">Las escalas representan posiciones del modelo, no medidas clínicas.</span><span class="key-hint"><kbd>←</kbd><kbd>↑</kbd><kbd>↓</kbd><kbd>→</kbd> mover · <kbd>W</kbd><kbd>S</kbd> avanzar · <kbd>Q</kbd><kbd>E</kbd> girar</span></div></div>
+          </div>
+        </section>
+        <aside class="task-column">
+          <div class="task-card">
+            <div class="task-heading"><span class="mode-pill" id="mode-label">PRÁCTICA GUIADA</span><button id="restart" class="icon-button" aria-label="Reiniciar caso" title="Reiniciar caso"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button></div>
+            <div class="step-number" id="step-number">PASO 01 DE 10</div>
+            <div class="step-progress" aria-hidden="true"><i id="step-progress"></i></div>
+            <h2 id="step-title">Prepará el encuentro</h2><p id="step-description"></p><div id="step-content"></div><div class="task-actions" id="task-actions"></div><div id="feedback" role="status" aria-live="polite"></div>
+          </div>
+          <div class="path-card"><div class="section-heading"><span>Secuencia del caso</span><strong id="step-count"></strong></div><ol id="step-list"></ol></div>
+          <div class="note-card"><span class="note-icon" aria-hidden="true">i</span><p id="teaching-note">La simulación acompaña la formación supervisada. No certifica destreza manual ni reemplaza la práctica clínica.</p></div>
+        </aside>
+      </div>
+      <footer class="main-footer"><span>Aprender · practicar · reflexionar</span><span>Modelo educativo · revisión clínica pendiente · modelos sintéticos, sin datos de pacientes</span></footer>
+    </main>
+  </div>
+  <dialog id="modal"><div class="modal-header"><span class="eyebrow" id="modal-eyebrow">CÉRVIX LAB</span><button id="modal-close" class="icon-button" aria-label="Cerrar">×</button></div><div id="modal-content"></div></dialog>
+  <noscript>Activá JavaScript para utilizar la simulación.</noscript>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>
